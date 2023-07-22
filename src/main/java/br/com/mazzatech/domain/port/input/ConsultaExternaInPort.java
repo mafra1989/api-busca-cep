@@ -1,8 +1,8 @@
 package br.com.mazzatech.domain.port.input;
 
-import br.com.mazzatech.domain.model.Cep;
+import br.com.mazzatech.domain.model.CepDomain;
 
 public interface ConsultaExternaInPort {
 
-    Cep consultaCep(Long code);
+    CepDomain consultaCep(Long code);
 }

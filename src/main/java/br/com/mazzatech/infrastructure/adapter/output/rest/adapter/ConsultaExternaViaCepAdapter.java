@@ -1,7 +1,7 @@
 package br.com.mazzatech.infrastructure.adapter.output.rest.adapter;
 
 import br.com.mazzatech.domain.config.ProfileConfiguration;
-import br.com.mazzatech.domain.model.Cep;
+import br.com.mazzatech.domain.model.CepDomain;
 import br.com.mazzatech.domain.port.output.ConsultaExternaOutPort;
 import br.com.mazzatech.infrastructure.adapter.output.rest.entity.ViaCepResponseEntity;
 import br.com.mazzatech.infrastructure.adapter.output.rest.mapper.CepOutputMapper;
@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 
 @Slf4j
@@ -34,7 +37,9 @@ public class ConsultaExternaViaCepAdapter implements ConsultaExternaOutPort {
 	private ObjectMapper objectMapper;
 
 	@Override
-	public Cep consultaCep(Long code) {
+	public CepDomain consultaCep(Long code) {
+
+		delay();
 
 		String url = profile.getUriViaCep().concat(code.toString()).concat("/json/");
 		ParameterizedTypeReference<ViaCepResponseEntity> typeRef = new ParameterizedTypeReference<ViaCepResponseEntity>() {};
@@ -54,5 +59,14 @@ public class ConsultaExternaViaCepAdapter implements ConsultaExternaOutPort {
 		}
 
 		return mapper.viaCeptoDomain(viaCepResponseEntity);
+	}
+
+	private static void delay() {
+		try {
+			int delay = ThreadLocalRandom.current().nextInt(500, 2000);
+			TimeUnit.MILLISECONDS.sleep(delay);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 }

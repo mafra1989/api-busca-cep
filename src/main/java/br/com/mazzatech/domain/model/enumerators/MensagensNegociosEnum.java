@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum MensagensNegociosEnum {
 
-    DADOS_NAO_ENCONTRADO("10","Dados não encontrado.");
+    CEP_NAO_ENCONTRADO("10","Cep não encontrado.");
 
     private final String codigo;
     private final String mensagem;

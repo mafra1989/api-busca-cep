@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Cep {
+public class CepDomain {
 
     private String logradouro;
     private String bairro;
@@ -20,5 +20,6 @@ public class Cep {
     private String pais;
     private Long ibgeCidade;
     private Long ibgeEstado;
+    private String origem;
 
 }

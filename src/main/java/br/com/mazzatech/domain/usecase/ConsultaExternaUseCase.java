@@ -1,21 +1,21 @@
 package br.com.mazzatech.domain.usecase;
 
-import br.com.mazzatech.domain.model.Cep;
+import br.com.mazzatech.domain.model.CepDomain;
 import br.com.mazzatech.domain.port.input.ConsultaExternaInPort;
-import br.com.mazzatech.domain.port.output.ConsultaExternaOutPort;
+import br.com.mazzatech.domain.strategy.CepStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.ExecutionException;
 
 @Component
 public class ConsultaExternaUseCase implements ConsultaExternaInPort {
 
     @Autowired
-    @Qualifier("brasilApiAdapter")
-    ConsultaExternaOutPort consultaExternaOutPort;
+    private CepStrategy cepStrategy;
 
     @Override
-    public Cep consultaCep(Long code) {
-        return consultaExternaOutPort.consultaCep(code);
+    public CepDomain consultaCep(Long code) throws ExecutionException, InterruptedException {
+        return cepStrategy.consultaCep(code);
     }
 }

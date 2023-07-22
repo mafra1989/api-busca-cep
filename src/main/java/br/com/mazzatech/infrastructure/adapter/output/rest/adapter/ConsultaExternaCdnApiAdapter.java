@@ -1,6 +1,6 @@
 package br.com.mazzatech.infrastructure.adapter.output.rest.adapter;
 
-import br.com.mazzatech.domain.model.Cep;
+import br.com.mazzatech.domain.model.CepDomain;
 import br.com.mazzatech.domain.port.output.ConsultaExternaOutPort;
 import br.com.mazzatech.infrastructure.adapter.output.rest.entity.CdnCepResponseEntity;
 import br.com.mazzatech.infrastructure.adapter.output.rest.mapper.CepOutputMapper;
@@ -9,12 +9,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 
 @Slf4j
@@ -33,14 +35,16 @@ public class ConsultaExternaCdnApiAdapter implements ConsultaExternaOutPort {
 	private ObjectMapper objectMapper;
 
 	@Override
-	public Cep consultaCep(Long code) {
+	public CepDomain consultaCep(Long code) {
 
-		String cep = formatarCPF(String.valueOf(code));
+		delay();
+
+		String cep = formatarCEP(String.valueOf(code));
 		ResponseEntity<CdnCepResponseEntity> cdnCepResponseEntity = null;
-		
+
 		try {
 			cdnCepResponseEntity = cepFeignClientService.buscaCep(cep);
-		} catch (FeignException.FeignClientException ex) {
+		} catch (FeignException ex) {
 			// throw new BusinessException(CodigoMensagem.CEP_NAO_ENCONTRADO);
 		}
 
@@ -54,8 +58,16 @@ public class ConsultaExternaCdnApiAdapter implements ConsultaExternaOutPort {
 		return mapper.cdnCeptoDomain(cdnCepResponseEntity.getBody());
 	}
 
-	public static String formatarCPF(String cpf){
-		String cpfCompleto = StringUtils.leftPad(cpf, 8, '0');
-		return cpfCompleto.substring(0,5) + "-" + cpfCompleto.substring(5,8);
+	public static String formatarCEP(String cep){
+		return cep.substring(0,5) + "-" + cep.substring(5,8);
+	}
+
+	private static void delay() {
+		try {
+			int delay = ThreadLocalRandom.current().nextInt(500, 2000);
+			TimeUnit.MILLISECONDS.sleep(delay);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 }

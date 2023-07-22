@@ -10,6 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CepDtoResponse {
 
     private String logradouro;
@@ -17,11 +18,8 @@ public class CepDtoResponse {
     private String cidade;
     private String estado;
     private String pais;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long ibgeCidade;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long ibgeEstado;
+    private String origem;
 
 }

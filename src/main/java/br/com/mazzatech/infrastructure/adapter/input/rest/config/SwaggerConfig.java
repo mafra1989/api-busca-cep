@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Configuration;
 
 @OpenAPIDefinition(
         info = @Info(
-                title = "Pré-motor de prevenção de fraudes - Manutenção de dados",
-                description = "APIs para manutenção de dados de prevenção de fraude e dados complementares na base do pré-motor"
+                title = "Busca CEP",
+                description = "API para buscar endereço com o Cep"
         )
 )
 @Configuration
