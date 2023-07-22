@@ -1,9 +1,8 @@
 package br.com.mazzatech.domain.config;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-
-import lombok.Getter;
 import org.springframework.stereotype.Component;
 
 @Getter

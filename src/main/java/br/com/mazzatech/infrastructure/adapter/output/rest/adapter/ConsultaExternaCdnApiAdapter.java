@@ -1,10 +1,12 @@
 package br.com.mazzatech.infrastructure.adapter.output.rest.adapter;
 
+import br.com.mazzatech.domain.config.ProfileConfiguration;
 import br.com.mazzatech.domain.model.CepDomain;
 import br.com.mazzatech.domain.port.output.ConsultaExternaOutPort;
 import br.com.mazzatech.infrastructure.adapter.output.rest.entity.CdnCepResponseEntity;
 import br.com.mazzatech.infrastructure.adapter.output.rest.mapper.CepOutputMapper;
 import br.com.mazzatech.infrastructure.adapter.output.rest.service.CepFeignClientService;
+import br.com.mazzatech.infrastructure.adapter.output.rest.utils.TimeUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
@@ -14,9 +16,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 
 
 @Slf4j
@@ -34,15 +33,21 @@ public class ConsultaExternaCdnApiAdapter implements ConsultaExternaOutPort {
 	@Autowired
 	private ObjectMapper objectMapper;
 
+	@Autowired
+	private ProfileConfiguration profile;
+
+	static final String LOG_URL_GET = "Chamada GET para a URL [{0}]";
+
 	@Override
 	public CepDomain consultaCep(Long code) {
 
-		delay();
+		TimeUtil.delay();
 
 		String cep = formatarCEP(String.valueOf(code));
 		ResponseEntity<CdnCepResponseEntity> cdnCepResponseEntity = null;
 
 		try {
+			log.info(LOG_URL_GET.replace("{0}", profile.getUriCdnCep()));
 			cdnCepResponseEntity = cepFeignClientService.buscaCep(cep);
 		} catch (FeignException ex) {
 			// throw new BusinessException(CodigoMensagem.CEP_NAO_ENCONTRADO);
@@ -62,12 +67,4 @@ public class ConsultaExternaCdnApiAdapter implements ConsultaExternaOutPort {
 		return cep.substring(0,5) + "-" + cep.substring(5,8);
 	}
 
-	private static void delay() {
-		try {
-			int delay = ThreadLocalRandom.current().nextInt(500, 2000);
-			TimeUnit.MILLISECONDS.sleep(delay);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
 }

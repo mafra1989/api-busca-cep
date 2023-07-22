@@ -6,6 +6,7 @@ import br.com.mazzatech.domain.port.output.ConsultaExternaOutPort;
 import br.com.mazzatech.infrastructure.adapter.output.rest.entity.BrasilApiResponseEntity;
 import br.com.mazzatech.infrastructure.adapter.output.rest.mapper.CepOutputMapper;
 import br.com.mazzatech.infrastructure.adapter.output.rest.service.CepRestTemplateService;
+import br.com.mazzatech.infrastructure.adapter.output.rest.utils.TimeUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -14,9 +15,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
-
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 
 
 @Slf4j
@@ -39,7 +37,7 @@ public class ConsultaExternaBrasilApiAdapter implements ConsultaExternaOutPort {
 	@Override
 	public CepDomain consultaCep(Long code) {
 
-		delay();
+		TimeUtil.delay();
 
 		String url = profile.getUriBrasilApi().concat(code.toString());
 		ParameterizedTypeReference<BrasilApiResponseEntity> typeRef = new ParameterizedTypeReference<BrasilApiResponseEntity>() {};
@@ -61,12 +59,4 @@ public class ConsultaExternaBrasilApiAdapter implements ConsultaExternaOutPort {
 		return mapper.brasilApitoDomain(brasilApiResponseEntity);
 	}
 
-	private static void delay() {
-		try {
-			int delay = ThreadLocalRandom.current().nextInt(500, 2000);
-			TimeUnit.MILLISECONDS.sleep(delay);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
 }
