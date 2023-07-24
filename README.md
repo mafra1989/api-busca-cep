@@ -34,6 +34,8 @@ Somente os dados da API que RESPONDE PRIMEIRO são considerados.
 * RestTemplate
 * FeignClient
 * Mockito Framework
+* Fixture Factory
+* Docker e Docker Compose
 
 ## Executando o Projeto
 
