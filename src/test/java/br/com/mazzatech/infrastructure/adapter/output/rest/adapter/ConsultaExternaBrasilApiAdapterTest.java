@@ -11,8 +11,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import utils.FixtureLoader;
 import utils.fixtures.domain.CepDomainFixture;
@@ -35,8 +37,8 @@ public class ConsultaExternaBrasilApiAdapterTest {
     @Mock
     private ProfileConfiguration profile;
 
-    @Mock
-    private CepOutputMapper mapper;
+    @Spy
+    private CepOutputMapper mapper = Mappers.getMapper(CepOutputMapper.class);
 
     @Mock
     private ObjectMapper objectMapper;
@@ -55,7 +57,6 @@ public class ConsultaExternaBrasilApiAdapterTest {
 
         when(profile.getUriBrasilApi()).thenReturn(URIEnum.BRASIL_API.getNome());
         when(brasilApiRestTemplateService.get(any(), any())).thenReturn(brasilApiResponseEntityMock);
-        when(mapper.brasilApitoDomain(any())).thenReturn(cepDomainMock);
 
         assertDoesNotThrow(() -> {
             CepDomain cepDomain = consultaExternaBrasilApiAdapter.consultaCep(69078150L);
