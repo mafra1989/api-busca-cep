@@ -1,7 +1,9 @@
 package br.com.mazzatech.infrastructure.adapter.output.rest.adapter;
 
 import br.com.mazzatech.domain.config.ProfileConfiguration;
+import br.com.mazzatech.domain.exception.CepNaoEncontradoException;
 import br.com.mazzatech.domain.model.CepDomain;
+import br.com.mazzatech.domain.model.enumerators.MensagensNegociosEnum;
 import br.com.mazzatech.domain.port.output.ConsultaExternaOutPort;
 import br.com.mazzatech.infrastructure.adapter.output.rest.entity.ViaCepResponseEntity;
 import br.com.mazzatech.infrastructure.adapter.output.rest.mapper.CepOutputMapper;
@@ -46,7 +48,7 @@ public class ConsultaExternaViaCepAdapter implements ConsultaExternaOutPort {
 		try {
 			viaCepResponseEntity = cepRestTemplateService.get(url, typeRef);
 		} catch (HttpClientErrorException ex) {
-			// throw new BusinessException(CodigoMensagem.CEP_NAO_ENCONTRADO);
+			throw new CepNaoEncontradoException(MensagensNegociosEnum.CEP_NAO_ENCONTRADO.getMensagem());
 		}
 
 		try {

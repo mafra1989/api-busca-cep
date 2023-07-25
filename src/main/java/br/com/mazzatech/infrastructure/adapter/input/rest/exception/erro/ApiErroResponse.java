@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,16 +32,6 @@ public class ApiErroResponse {
         this.developerMessage = ex.getLocalizedMessage();
     }
 
-    public ApiErroResponse(HttpStatus status, Throwable ex) {
-        this.status = status;
-        this.message = "Erro inesperado.";
-        this.developerMessage = ex.getLocalizedMessage();
-    }
-
-    public ApiErroResponse(HttpStatus status) {
-        this.status = status;
-    }
-
     private void addSubErro(ApiSubErroResponse apiSubErroResponse) {
         if (errors == null){
             errors = new ArrayList<>();
@@ -53,36 +41,6 @@ public class ApiErroResponse {
 
     public void addErroNegocio(String codigo, String message) {
         addSubErro(new SubErroNegocio(codigo, message));
-    }
-
-    private void addValidacaoErro(String object, String field, Object rejectedValue, String message) {
-        addSubErro(new ApiValidacaoErroResponse(object, field, message, rejectedValue));
-    }
-
-    private void addValidacaoErro(String object, String message) {
-        addSubErro(new ApiValidacaoErroResponse(object, message));
-    }
-
-    private void addValidacaoErro(FieldError fieldError) {
-        this.addValidacaoErro(
-                fieldError.getObjectName(),
-                fieldError.getField(),
-                fieldError.getRejectedValue(),
-                fieldError.getDefaultMessage());
-    }
-
-    private void addValidacaoErro(ObjectError objectError) {
-        this.addValidacaoErro(
-                objectError.getObjectName(),
-                objectError.getDefaultMessage());
-    }
-
-    public void addValidacaoErro(List<ObjectError> globalErrors) {
-        globalErrors.forEach(this::addValidacaoErro);
-    }
-
-    public void addValidationErrors(List<FieldError> fieldErrors) {
-        fieldErrors.forEach(this::addValidacaoErro);
     }
 
 }

@@ -1,7 +1,10 @@
 package br.com.mazzatech.infrastructure.adapter.output.rest.adapter;
 
 import br.com.mazzatech.domain.config.ProfileConfiguration;
+import br.com.mazzatech.domain.exception.CepFeignException;
+import br.com.mazzatech.domain.exception.CepNaoEncontradoException;
 import br.com.mazzatech.domain.model.CepDomain;
+import br.com.mazzatech.domain.model.enumerators.MensagensNegociosEnum;
 import br.com.mazzatech.domain.port.output.ConsultaExternaOutPort;
 import br.com.mazzatech.infrastructure.adapter.output.rest.entity.CdnCepResponseEntity;
 import br.com.mazzatech.infrastructure.adapter.output.rest.mapper.CepOutputMapper;
@@ -11,6 +14,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
@@ -49,8 +53,11 @@ public class ConsultaExternaCdnApiAdapter implements ConsultaExternaOutPort {
 		try {
 			log.info(LOG_URL_GET.replace("{0}", profile.getUriCdnCep()));
 			cdnCepResponseEntity = cepFeignClientService.buscaCep(cep);
+		} catch (FeignException.NotFound ex) {
+			throw new CepNaoEncontradoException(MensagensNegociosEnum.CEP_NAO_ENCONTRADO.getMensagem());
 		} catch (FeignException ex) {
-			// throw new BusinessException(CodigoMensagem.CEP_NAO_ENCONTRADO);
+			throw new CepFeignException(MensagensNegociosEnum.ERRO_INTERNO.getCodigo(),
+					MensagensNegociosEnum.ERRO_INTERNO.getMensagem());
 		}
 
 		try {
@@ -64,7 +71,8 @@ public class ConsultaExternaCdnApiAdapter implements ConsultaExternaOutPort {
 	}
 
 	public static String formatarCEP(String cep){
-		return cep.substring(0,5) + "-" + cep.substring(5,8);
+		String cepCompleto = StringUtils.leftPad(cep, 8, "0");
+		return cepCompleto.substring(0,5) + "-" + cepCompleto.substring(5,8);
 	}
 
 }

@@ -8,7 +8,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum MensagenInfraestruturaEnum {
 
-    ERRO_INTERNO("Erro interno.");
+    FALHA_PROCESSAMENTO("Falha no processamento da requisição.");
 
     private final String mensagem;
 

@@ -1,20 +1,18 @@
 package br.com.mazzatech.domain.exception;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class BusinessException extends RuntimeException {
 
-    private final String errorCode;
-    private final String errorMessage;
+    private String errorCode;
+    private String errorMessage;
 
-    public BusinessException(String errorCode, String errorMessage) {
-        this.errorCode = errorCode;
+    public BusinessException(String errorMessage) {
         this.errorMessage = errorMessage;
-    }
-
-    public String getErrorCode() {
-        return errorCode;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
     }
 }
